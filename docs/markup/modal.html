@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <title>METAUI</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <link rel="stylesheet" href="/docs/css/index.css">
+    <link rel="stylesheet" href="/css/index.css">
+  </head>
+  <body>
+    <div id="guideWrap">
+      <div class="main_content">
+        <div class="title_sec">
+          <p class="title title_lv1">Modal</p>
+        </div>
+        <div class="title_sec">
+          <p class="title title_lv2">Example</p>
+        </div>
+        <div class="guide_card_box"><section class="code_view"><button class="mui-button mui-size-large" type="button" mui-toggle="target:#modal;mode:hover;"><span>모달 호출 버튼</span></button><div mui-modal="" id="modal"><div class="mui_modal_dialog mui_size_medium mui_auto_vertical"> <div class="mui_modal_body"><div class="mui_modal_header">모달 타이틀</div><div class="mui_modal_content"><div>모달 컨텐츠</div></div><div class="mui_modal_footer"><div class="btns_wrap"><button class="mui-button mui-size-large" type="button"><span>확인</span></button><button class="mui-button mui-size-large mui_modal_close" type="button"><span>취소</span></button></div></div><button class="mui_modal_close">닫기</button></div></div></div></section><div class="code_block"><pre><code class="language-pug">//- 호출 버튼
++button({
+  label:"모달 호출 버튼",
+  size:'large',
+  muiToggle:'target:#modal;mode:hover;'
+})
+ 
+ 
++modal({
+  title:"모달 타이틀"
+})
+  //- 컨텐츠 영역
+  div 모달 컨텐츠
+ 
+  //- 푸터 영역
+  +footer()
+    div.btns_wrap
+      +button({
+        label:"확인",
+        size:'large',
+      })
+      +button({
+        label:"취소",
+        size:'large',
+        className:"mui_modal_close"
+      })</code></pre></div>
+          <div class="view_code">
+            <button>code view</button>
+          </div>
+        </div>
+        <div class="title_sec">
+          <p class="title title_lv2">Alert, confirm, dialog</p>
+        </div>
+        <div class="guide_card_box">
+          <button class="mui-button mui-size-large" id="callAlert" type="button"><span>Alert 호출</span></button>
+          <button class="mui-button mui-size-large" id="callConfirm" type="button"><span>Confirm 호출</span></button>
+          <button class="mui-button mui-size-large" id="callDialog" type="button"><span>Dialog 호출</span></button><section class="code_view"><GCui class="modal alert" Alert!!="Alert!!"></GCui><GCui class="modal confirm" Confirm!!="Confirm!!"></GCui><GCui class="modal dialog" dialog="dialog"></GCui></section><div class="code_block"><pre><code class="language-pug">//- 얼럿
+GCui.modal.alert("Alert!!")
+ 
+//- 컴폼
+GCui.modal.confirm("Confirm!!")
+ 
+//- 다이얼로그
+GCui.modal.dialog("dialog")</code></pre></div>
+          <div class="view_code">
+            <button>code view</button>
+          </div>
+        </div><br><br>
+        <div class="title_sec">
+          <p class="title title_lv2">Attribute</p>
+        </div>
+        <div class="title_sec">
+          <p class="title title_lv3">+tabsWrap()</p>
+        </div>
+        <div class="attribute_table">
+          <div class="mui-datatable attr_table">
+            <table>
+              <colgroup>
+                <col width="15%"/>
+                <col width="55%"/>
+                <col width="15%"/>
+                <col width="15%"/>
+              </colgroup>
+              <caption>Attributes</caption>
+              <thead>
+                <tr>
+                  <th class="th" scope="cols">Property</th>
+                  <th class="th" scope="cols">Description</th>
+                  <th class="th" scope="cols">Type</th>
+                  <th class="th" scope="cols">Default</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>active</td>
+                  <td>활성화 텝 index</td>
+                  <td>nomber</td>
+                  <td>0</td>
+                </tr>
+                <tr>
+                  <td>className</td>
+                  <td>커스텀 클래스</td>
+                  <td>string</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="title_sec">
+          <p class="title title_lv3">+tab()</p>
+        </div>
+        <div class="attribute_table">
+          <div class="mui-datatable attr_table">
+            <table>
+              <colgroup>
+                <col width="15%"/>
+                <col width="55%"/>
+                <col width="15%"/>
+                <col width="15%"/>
+              </colgroup>
+              <caption>Attributes</caption>
+              <thead>
+                <tr>
+                  <th class="th" scope="cols">Property</th>
+                  <th class="th" scope="cols">Description</th>
+                  <th class="th" scope="cols">Type</th>
+                  <th class="th" scope="cols">Default</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>text</td>
+                  <td>텝 제목</td>
+                  <td>string</td>
+                  <td>-</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <script>
+          document.addEventListener("DOMContentLoaded", (event) => {
+            let elem = []
+            elem.push(document.querySelector("#callAlert"))
+            elem.push(document.querySelector("#callConfirm"))
+            elem.push(document.querySelector("#callDialog"))
+            elem.forEach((el, i) => {
+              GCui.util.on(el, 'click', (e) => {
+                const id = el.id
+                switch (id) {
+                  case "callAlert":{
+                    GCui.modal.alert("Alert!!")
+                    break;
+                  }
+                  case "callConfirm":{
+                    GCui.modal.confirm("Confirm!!")
+                    break;
+                  }
+                  case "callDialog":{
+                    GCui.modal.dialog("dialog")
+                    break;
+                  }
+                }
+              })
+            })
+          });
+        </script>
+      </div>
+    </div>
+    <script type="text/javascript" src="/js/index.js"></script>
+    <script type="text/javascript" src="/index.js"></script>
+  </body>
+</html>

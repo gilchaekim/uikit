@@ -1,0 +1,41 @@
+.mui_radio, .mui_checkbox{
+  position: relative;
+}
+
+
+.mui_radio_group{
+  .mui_radio{
+    display: inline-block;
+    & ~ .mui_radio{
+      margin-left: 20px;
+    }
+  }
+}
+.mui_checkbox_group{
+  .mui_checkbox{
+    display: inline-block;
+    & ~ .mui_checkbox{
+      margin-left: 20px;
+    }
+  }
+}
+.button_type{
+  .mui_radio, .mui_checkbox{
+    input{
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      z-index: -1;
+      &:checked + label{
+        background: #aaa;
+      }
+    }
+    label{
+      border: 1px solid red;
+    }
+    & ~ .mui_radio, .mui_checkbox{
+      margin-left: 0;
+    }
+  }
+}

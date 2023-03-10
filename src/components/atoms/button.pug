@@ -1,0 +1,29 @@
+mixin button(params={})
+  //- 공통 요소 Start
+  - const prefix = "mui"
+  - const divide = '_'
+  //- 공통 요소 End
+  
+
+  - let element = "button"
+  - let buttonType = "button"
+  - const { size="medium", label, isIcon, href, muiToggle, className, id, ...rest } = Object.assign({}, params)
+  - let test = "mui"
+  if href
+    - element = "a"
+    - buttonType = undefined
+  #{element}(
+    id=id
+    class=`${prefix}-button`
+    class=`${prefix}-size-${size}`
+    class=className
+    class={
+      'mui-icon':isIcon,
+    }
+    type=buttonType
+    href=href
+    mui-toggle=muiToggle
+  )
+    span
+      | #{label}
+

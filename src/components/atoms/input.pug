@@ -1,0 +1,23 @@
+mixin input(params={})
+  //- 공통 요소 Start
+  - const prefix = "mui"
+  - const divide = '_'
+  //- 공통 요소 End
+
+  - const { element="span", className, title, placeholder, value, readOnly, disabled, id, type="text", muiFormatter, maxlength, ...rest } = Object.assign({}, params)
+  #{element}(
+    class=`${prefix}${divide}input`
+    class=className
+  )
+    input(
+      type=type
+      id=id
+      title=title
+      placeholder=placeholder
+      readonly=readOnly
+      disabled=disabled
+      value=value
+      maxlength=maxlength
+      mui-formatter=muiFormatter
+    )
+

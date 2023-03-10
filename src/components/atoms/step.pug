@@ -1,0 +1,19 @@
+
+mixin stepWrap(params={})
+  //- 공통 요소 Start
+  - const prefix = "mui"
+  - const divide = '_'
+  //- 공통 요소 End
+
+  - const { className, stepName, ...rest } = Object.assign({}, params)
+  - const stepItems = [];
+
+  mixin step(item)
+    - stepItems.push({name:item, body:block})
+
+  block
+  ul.step
+    each item, index in stepItems
+      li= item.name + (index+1)
+        - item.body && item.body()
+        

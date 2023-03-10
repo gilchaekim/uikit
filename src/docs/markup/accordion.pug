@@ -1,0 +1,74 @@
+extends ../layout/guideBase.pug
+
+block content
+  div.main_content
+    +guideTitle({
+      text:"Accordion"
+    })
+    +guideTitle({
+      text:"Example",
+      level:2
+    })
+    +guideExample()(code)
+      :code
+        +accordion({
+          active:2
+        })
+          +acc_title('아코디언 리스트 타이틀 이건 텍스트고1')
+          +acc_content()
+            div content1
+
+          +acc_title()
+            div(
+              style="border:1px solid red"
+            ) 아코디언 리스트 타이틀 이건 dom 구조로 들어온 것
+          +acc_content()
+            div content2
+
+          +acc_title('아코디언 리스트 타이틀3')
+          +acc_content()
+            div content3
+
+          +acc_title('아코디언 리스트 타이틀4')
+          +acc_content()
+            div content4
+
+                
+    br
+    br
+    +guideTitle({
+      text:"Attribute",
+      level:2
+    })
+    +attributesLists([
+      [
+        {
+          text:'active'
+        },
+        {
+          text:'활성화 텝 index'
+        },
+        {
+          text:'nomber'
+        },
+        {
+          text:'0'
+        }
+      ],
+      [
+        {
+          text:'className'
+        },
+        {
+          text:'커스텀 클래스'
+        },
+        {
+          text:'string'
+        },
+        {
+          text:'-'
+        }
+      ]
+    ])
+
+

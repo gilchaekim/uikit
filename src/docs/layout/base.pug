@@ -1,0 +1,30 @@
+include ../../components/atoms/index
+include ./mixins
+
+doctype html
+html(lang="ko")
+  head
+    title 저축은행중앙회 마크업진행표
+    link(
+      rel="stylesheet"
+      href="/docs/css/index.css"
+    )
+  body(
+    mui-worklists
+  )
+    #wrap
+      include ./header
+      #contents 
+        include ./sideNav
+           
+
+
+        .contents
+          block content
+
+    script(
+      type="text/javascript"
+      src="/js/index.js"
+    )
+
+    
