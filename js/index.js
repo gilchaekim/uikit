@@ -8186,7 +8186,7 @@
     });
   }
 
-  var Animations$2 = {
+  var Animations$1 = {
     slide: {
       show: function show(dir) {
         return [{
@@ -8220,7 +8220,7 @@
     return "scale3d(".concat(value, ", ").concat(value, ", 1)");
   }
 
-  var Animations$1 = _objectSpread2(_objectSpread2({}, Animations$2), {}, {
+  var Animations = _objectSpread2(_objectSpread2({}, Animations$1), {}, {
     fade: {
       show: function show() {
         return [{
@@ -8629,7 +8629,7 @@
       return {
         easing: 'ease',
         finite: false,
-        velocity: 1,
+        velocity: .01,
         index: 0,
         prevIndex: -1,
         stack: [],
@@ -8789,7 +8789,7 @@
     data: {
       animation: 'slide',
       clsActivated: 'uk-transition-active',
-      Animations: Animations$2,
+      Animations: Animations$1,
       Transitioner: Transitioner$1
     },
     computed: {
@@ -8845,7 +8845,7 @@
         selCaption: '.uk-lightbox-caption',
         pauseOnHover: false,
         velocity: 2,
-        Animations: Animations$1,
+        Animations: Animations,
         template: "<div class=\"uk-lightbox uk-overflow-hidden\">\n                        <ul class=\"uk-lightbox-items\"></ul>\n                        <div class=\"uk-lightbox-toolbar uk-position-top uk-text-right uk-transition-slide-top uk-transition-opaque\">\n                            <button class=\"uk-lightbox-toolbar-icon uk-close-large\" type=\"button\" uk-close></button>\n                         </div>\n                        <a class=\"uk-lightbox-button uk-position-center-left uk-position-medium uk-transition-fade\" href uk-slidenav-previous uk-lightbox-item=\"previous\"></a>\n                        <a class=\"uk-lightbox-button uk-position-center-right uk-position-medium uk-transition-fade\" href uk-slidenav-next uk-lightbox-item=\"next\"></a>\n                        <div class=\"uk-lightbox-toolbar uk-lightbox-caption uk-position-bottom uk-text-center uk-transition-slide-bottom uk-transition-opaque\"></div>\n                    </div>"
       };
     },
@@ -8925,7 +8925,7 @@
         this.draggable = false;
         e.preventDefault();
         this.toggleElement(this.$el, true, false);
-        this.animation = Animations$1['scale'];
+        this.animation = Animations['scale'];
         removeClass(e.target, this.clsActive);
         this.stack.splice(1, 0, this.index);
       }
@@ -9821,6 +9821,7 @@
         var linear = arguments.length > 2 ? arguments[2] : undefined;
         var timing = linear ? 'linear' : easing;
         duration -= Math.round(duration * clamp(percent, -1, 1));
+        console.log('show');
         this.translate(percent);
         percent = prev ? percent : clamp(percent, 0, 1);
         triggerUpdate(this.getItemIn(), 'itemin', {
@@ -9841,17 +9842,21 @@
         return deferred.promise;
       },
       cancel: function cancel() {
+        console.log('cancel');
         Transition.cancel(list);
       },
       reset: function reset() {
+        console.log('reset');
         css(list, 'transform', '');
       },
       forward: function forward(duration) {
         var percent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.percent();
+        console.log('forward');
         Transition.cancel(list);
         return this.show(duration, percent, true);
       },
       translate: function translate(percent) {
+        console.log('translate');
         var distance = this.getDistance() * dir * (isRtl ? -1 : 1);
         css(list, 'transform', _translate(clamp(-to + (distance - distance * percent), -getWidth(list), dimensions$1(list).width) * (isRtl ? -1 : 1), 'px'));
         var actives = this.getActives();
@@ -10219,7 +10224,7 @@
     return isIn(type) ^ dir < 0 ? percent : 1 - percent;
   }
 
-  var Animations = _objectSpread2(_objectSpread2({}, Animations$2), {}, {
+  _objectSpread2(_objectSpread2({}, Animations$1), {}, {
     fade: {
       show: function show() {
         return [{
@@ -10349,8 +10354,7 @@
       maxHeight: false,
       selList: '.uk-slideshow-items',
       attrItem: 'uk-slideshow-item',
-      selNav: '.uk-slideshow-nav',
-      Animations: Animations
+      selNav: '.uk-slideshow-nav'
     },
     update: {
       read: function read() {

@@ -30,7 +30,7 @@ export default {
     data: () => ({
         easing: 'ease',
         finite: false,
-        velocity: 1,
+        velocity: .01,
         index: 0,
         prevIndex: -1,
         stack: [],

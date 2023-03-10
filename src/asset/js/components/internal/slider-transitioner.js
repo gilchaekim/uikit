@@ -31,7 +31,7 @@ export default function (prev, next, dir, { center, easing, list }) {
         show(duration, percent = 0, linear) {
             const timing = linear ? 'linear' : easing;
             duration -= Math.round(duration * clamp(percent, -1, 1));
-
+            console.log('show');
             this.translate(percent);
 
             percent = prev ? percent : clamp(percent, 0, 1);
@@ -55,21 +55,25 @@ export default function (prev, next, dir, { center, easing, list }) {
         },
 
         cancel() {
+            console.log('cancel');
             Transition.cancel(list);
         },
 
         reset() {
+            console.log('reset');
             css(list, 'transform', '');
         },
 
         forward(duration, percent = this.percent()) {
+            console.log('forward');
             Transition.cancel(list);
             return this.show(duration, percent, true);
         },
 
         translate(percent) {
+            console.log('translate');
             const distance = this.getDistance() * dir * (isRtl ? -1 : 1);
-
+            
             css(
                 list,
                 'transform',

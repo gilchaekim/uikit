@@ -21,7 +21,6 @@ export default {
         selList: '.uk-slideshow-items',
         attrItem: 'uk-slideshow-item',
         selNav: '.uk-slideshow-nav',
-        Animations,
     },
 
     update: {
