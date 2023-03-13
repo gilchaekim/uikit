@@ -111,7 +111,6 @@ export default {
 
         move(e) {
             const distance = this.pos - this.drag;
-
             if (
                 distance === 0 ||
                 this.prevPos === this.pos ||
@@ -127,10 +126,11 @@ export default {
 
             this.dragging = true;
             this.dir = distance < 0 ? 1 : -1;
-
             const { slides } = this;
             let { prevIndex } = this;
+
             let dis = Math.abs(distance);
+            
             let nextIndex = this.getIndex(prevIndex + this.dir, prevIndex);
             let width = this._getDistance(prevIndex, nextIndex) || slides[prevIndex].offsetWidth;
 

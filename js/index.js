@@ -5330,6 +5330,330 @@
     }
   };
 
+  var SVG = {
+    args: 'src',
+    props: {
+      id: Boolean,
+      icon: String,
+      src: String,
+      style: String,
+      width: Number,
+      height: Number,
+      ratio: Number,
+      "class": String,
+      strokeAnimation: Boolean,
+      focusable: Boolean,
+      // IE 11
+      attributes: 'list'
+    },
+    data: {
+      ratio: 1,
+      include: ['style', 'class', 'focusable'],
+      "class": '',
+      strokeAnimation: false
+    },
+    beforeConnect: function beforeConnect() {
+      this["class"] += ' uk-svg';
+    },
+    connected: function connected() {
+      var _this = this;
+      if (!this.icon && includes(this.src, '#')) {
+        var _this$src$split = this.src.split('#');
+        var _this$src$split2 = _slicedToArray(_this$src$split, 2);
+        this.src = _this$src$split2[0];
+        this.icon = _this$src$split2[1];
+      }
+      this.svg = this.getSvg().then(function (el) {
+        if (_this._connected) {
+          var svg = insertSVG(el, _this.$el);
+          if (_this.svgEl && svg !== _this.svgEl) {
+            remove$1(_this.svgEl);
+          }
+          _this.applyAttributes(svg, el);
+          return _this.svgEl = svg;
+        }
+      }, noop);
+      if (this.strokeAnimation) {
+        this.svg.then(function (el) {
+          if (_this._connected) {
+            applyAnimation(el);
+            _this.registerObserver(observeIntersection(el, function (records, observer) {
+              applyAnimation(el);
+              observer.disconnect();
+            }));
+          }
+        });
+      }
+    },
+    disconnected: function disconnected() {
+      var _this2 = this;
+      this.svg.then(function (svg) {
+        if (_this2._connected) {
+          return;
+        }
+        if (isVoidElement(_this2.$el)) {
+          _this2.$el.hidden = false;
+        }
+        remove$1(svg);
+        _this2.svgEl = null;
+      });
+      this.svg = null;
+    },
+    methods: {
+      getSvg: function getSvg() {
+        var _this3 = this;
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!(isTag(_this3.$el, 'img') && !_this3.$el.complete && _this3.$el.loading === 'lazy')) {
+                    _context.next = 2;
+                    break;
+                  }
+                  return _context.abrupt("return", new Promise(function (resolve) {
+                    return once(_this3.$el, 'load', function () {
+                      return resolve(_this3.getSvg());
+                    });
+                  }));
+                case 2:
+                  _context.t1 = parseSVG;
+                  _context.next = 5;
+                  return loadSVG(_this3.src);
+                case 5:
+                  _context.t2 = _context.sent;
+                  _context.t3 = _this3.icon;
+                  _context.t0 = (0, _context.t1)(_context.t2, _context.t3);
+                  if (_context.t0) {
+                    _context.next = 10;
+                    break;
+                  }
+                  _context.t0 = Promise.reject('SVG not found.');
+                case 10:
+                  return _context.abrupt("return", _context.t0);
+                case 11:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      applyAttributes: function applyAttributes(el, ref) {
+        var _this4 = this;
+        for (var prop in this.$options.props) {
+          if (includes(this.include, prop) && prop in this) {
+            attr(el, prop, this[prop]);
+          }
+        }
+        for (var attribute in this.attributes) {
+          var _this$attributes$attr = this.attributes[attribute].split(':', 2),
+            _this$attributes$attr2 = _slicedToArray(_this$attributes$attr, 2),
+            _prop = _this$attributes$attr2[0],
+            value = _this$attributes$attr2[1];
+          attr(el, _prop, value);
+        }
+        if (!this.id) {
+          removeAttr(el, 'id');
+        }
+        var props = ['width', 'height'];
+        var dimensions = props.map(function (prop) {
+          return _this4[prop];
+        });
+        if (!dimensions.some(function (val) {
+          return val;
+        })) {
+          dimensions = props.map(function (prop) {
+            return attr(ref, prop);
+          });
+        }
+        var viewBox = attr(ref, 'viewBox');
+        if (viewBox && !dimensions.some(function (val) {
+          return val;
+        })) {
+          dimensions = viewBox.split(' ').slice(2);
+        }
+        dimensions.forEach(function (val, i) {
+          return attr(el, props[i], toFloat(val) * _this4.ratio || null);
+        });
+      }
+    }
+  };
+  var loadSVG = memoize( /*#__PURE__*/function () {
+    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(src) {
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!src) {
+                _context2.next = 10;
+                break;
+              }
+              if (!startsWith(src, 'data:')) {
+                _context2.next = 5;
+                break;
+              }
+              return _context2.abrupt("return", decodeURIComponent(src.split(',')[1]));
+            case 5:
+              _context2.next = 7;
+              return fetch(src);
+            case 7:
+              return _context2.abrupt("return", _context2.sent.text());
+            case 8:
+              _context2.next = 11;
+              break;
+            case 10:
+              return _context2.abrupt("return", Promise.reject());
+            case 11:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+  function parseSVG(svg, icon) {
+    var _svg;
+    if (icon && includes(svg, '<symbol')) {
+      svg = parseSymbols(svg, icon) || svg;
+    }
+    svg = $(svg.substr(svg.indexOf('<svg')));
+    return ((_svg = svg) === null || _svg === void 0 ? void 0 : _svg.hasChildNodes()) && svg;
+  }
+  var symbolRe = /<symbol([^]*?id=(['"])(.+?)\2[^]*?<\/)symbol>/g;
+  var symbols = {};
+  function parseSymbols(svg, icon) {
+    if (!symbols[svg]) {
+      symbols[svg] = {};
+      symbolRe.lastIndex = 0;
+      var match;
+      while (match = symbolRe.exec(svg)) {
+        symbols[svg][match[3]] = "<svg xmlns=\"http://www.w3.org/2000/svg\"".concat(match[1], "svg>");
+      }
+    }
+    return symbols[svg][icon];
+  }
+  function applyAnimation(el) {
+    var length = getMaxPathLength(el);
+    if (length) {
+      el.style.setProperty('--uk-animation-stroke', length);
+    }
+  }
+  function getMaxPathLength(el) {
+    return Math.ceil(Math.max.apply(Math, [0].concat(_toConsumableArray($$('[stroke]', el).map(function (stroke) {
+      try {
+        return stroke.getTotalLength();
+      } catch (e) {
+        return 0;
+      }
+    })))));
+  }
+  function insertSVG(el, root) {
+    if (isVoidElement(root) || isTag(root, 'canvas')) {
+      root.hidden = true;
+      var next = root.nextElementSibling;
+      return equals(el, next) ? next : after(root, el);
+    }
+    var last = root.lastElementChild;
+    return equals(el, last) ? last : append(root, el);
+  }
+  function equals(el, other) {
+    return isTag(el, 'svg') && isTag(other, 'svg') && innerHTML(el) === innerHTML(other);
+  }
+  function innerHTML(el) {
+    return (el.innerHTML || new XMLSerializer().serializeToString(el).replace(/<svg.*?>(.*?)<\/svg>/g, '$1')).replace(/\s/g, '');
+  }
+
+  // const icons = {
+  //     spinner,
+  //     totop,
+  //     marker,
+  //     'close-icon': closeIcon,
+  //     'close-large': closeLarge,
+  //     'nav-parent-icon': navParentIcon,
+  //     'nav-parent-icon-large': navParentIconLarge,
+  //     'navbar-parent-icon': navbarParentIcon,
+  //     'navbar-toggle-icon': navbarToggleIcon,
+  //     'overlay-icon': overlayIcon,
+  //     'pagination-next': paginationNext,
+  //     'pagination-previous': paginationPrevious,
+  //     'search-icon': searchIcon,
+  //     'search-large': searchLarge,
+  //     'search-navbar': searchNavbar,
+  //     'slidenav-next': slidenavNext,
+  //     'slidenav-next-large': slidenavNextLarge,
+  //     'slidenav-previous': slidenavPrevious,
+  //     'slidenav-previous-large': slidenavPreviousLarge,
+  // };
+
+  var Icon = {
+    install: install$3,
+    "extends": SVG,
+    args: 'icon',
+    props: ['icon'],
+    data: {
+      include: ['focusable']
+    },
+    isIcon: true,
+    beforeConnect: function beforeConnect() {
+      addClass(this.$el, 'uk-icon');
+    },
+    methods: {
+      getSvg: function getSvg() {
+        var _this = this;
+        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+          var icon;
+          return _regeneratorRuntime().wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  icon = getIcon(_this.icon);
+                  if (icon) {
+                    _context.next = 3;
+                    break;
+                  }
+                  throw 'Icon not found.';
+                case 3:
+                  return _context.abrupt("return", icon);
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      }
+    }
+  };
+  function install$3(UIkit) {
+    UIkit.icon.add = function (name, svg) {
+      var added = isString(name) ? _defineProperty({}, name, svg) : name;
+      each(added, function (svg, name) {
+      });
+      if (UIkit._initialized) {
+        apply(document.body, function (el) {
+          return each(UIkit.getComponents(el), function (cmp) {
+            cmp.$options.isIcon && cmp.icon in added && cmp.$reset();
+          });
+        });
+      }
+    };
+  }
+  function getIcon(icon) {
+    // if (!icons[icon]) {
+    //     return null;
+    // }
+
+    // if (!parsed[icon]) {
+    //     parsed[icon] = $((icons[applyRtl(icon)] || icons[icon]).trim());
+    // }
+
+    // return parsed[icon].cloneNode(true);
+  }
+
   var nativeLazyLoad = inBrowser && 'loading' in HTMLImageElement.prototype;
   var img = {
     args: 'dataSrc',
@@ -6934,243 +7258,6 @@
     return value;
   }
 
-  var svg = {
-    args: 'src',
-    props: {
-      id: Boolean,
-      icon: String,
-      src: String,
-      style: String,
-      width: Number,
-      height: Number,
-      ratio: Number,
-      "class": String,
-      strokeAnimation: Boolean,
-      focusable: Boolean,
-      // IE 11
-      attributes: 'list'
-    },
-    data: {
-      ratio: 1,
-      include: ['style', 'class', 'focusable'],
-      "class": '',
-      strokeAnimation: false
-    },
-    beforeConnect: function beforeConnect() {
-      this["class"] += ' uk-svg';
-    },
-    connected: function connected() {
-      var _this = this;
-      if (!this.icon && includes(this.src, '#')) {
-        var _this$src$split = this.src.split('#');
-        var _this$src$split2 = _slicedToArray(_this$src$split, 2);
-        this.src = _this$src$split2[0];
-        this.icon = _this$src$split2[1];
-      }
-      this.svg = this.getSvg().then(function (el) {
-        if (_this._connected) {
-          var svg = insertSVG(el, _this.$el);
-          if (_this.svgEl && svg !== _this.svgEl) {
-            remove$1(_this.svgEl);
-          }
-          _this.applyAttributes(svg, el);
-          return _this.svgEl = svg;
-        }
-      }, noop);
-      if (this.strokeAnimation) {
-        this.svg.then(function (el) {
-          if (_this._connected) {
-            applyAnimation(el);
-            _this.registerObserver(observeIntersection(el, function (records, observer) {
-              applyAnimation(el);
-              observer.disconnect();
-            }));
-          }
-        });
-      }
-    },
-    disconnected: function disconnected() {
-      var _this2 = this;
-      this.svg.then(function (svg) {
-        if (_this2._connected) {
-          return;
-        }
-        if (isVoidElement(_this2.$el)) {
-          _this2.$el.hidden = false;
-        }
-        remove$1(svg);
-        _this2.svgEl = null;
-      });
-      this.svg = null;
-    },
-    methods: {
-      getSvg: function getSvg() {
-        var _this3 = this;
-        return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-          return _regeneratorRuntime().wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  if (!(isTag(_this3.$el, 'img') && !_this3.$el.complete && _this3.$el.loading === 'lazy')) {
-                    _context.next = 2;
-                    break;
-                  }
-                  return _context.abrupt("return", new Promise(function (resolve) {
-                    return once(_this3.$el, 'load', function () {
-                      return resolve(_this3.getSvg());
-                    });
-                  }));
-                case 2:
-                  _context.t1 = parseSVG;
-                  _context.next = 5;
-                  return loadSVG(_this3.src);
-                case 5:
-                  _context.t2 = _context.sent;
-                  _context.t3 = _this3.icon;
-                  _context.t0 = (0, _context.t1)(_context.t2, _context.t3);
-                  if (_context.t0) {
-                    _context.next = 10;
-                    break;
-                  }
-                  _context.t0 = Promise.reject('SVG not found.');
-                case 10:
-                  return _context.abrupt("return", _context.t0);
-                case 11:
-                case "end":
-                  return _context.stop();
-              }
-            }
-          }, _callee);
-        }))();
-      },
-      applyAttributes: function applyAttributes(el, ref) {
-        var _this4 = this;
-        for (var prop in this.$options.props) {
-          if (includes(this.include, prop) && prop in this) {
-            attr(el, prop, this[prop]);
-          }
-        }
-        for (var attribute in this.attributes) {
-          var _this$attributes$attr = this.attributes[attribute].split(':', 2),
-            _this$attributes$attr2 = _slicedToArray(_this$attributes$attr, 2),
-            _prop = _this$attributes$attr2[0],
-            value = _this$attributes$attr2[1];
-          attr(el, _prop, value);
-        }
-        if (!this.id) {
-          removeAttr(el, 'id');
-        }
-        var props = ['width', 'height'];
-        var dimensions = props.map(function (prop) {
-          return _this4[prop];
-        });
-        if (!dimensions.some(function (val) {
-          return val;
-        })) {
-          dimensions = props.map(function (prop) {
-            return attr(ref, prop);
-          });
-        }
-        var viewBox = attr(ref, 'viewBox');
-        if (viewBox && !dimensions.some(function (val) {
-          return val;
-        })) {
-          dimensions = viewBox.split(' ').slice(2);
-        }
-        dimensions.forEach(function (val, i) {
-          return attr(el, props[i], toFloat(val) * _this4.ratio || null);
-        });
-      }
-    }
-  };
-  var loadSVG = memoize( /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(src) {
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              if (!src) {
-                _context2.next = 10;
-                break;
-              }
-              if (!startsWith(src, 'data:')) {
-                _context2.next = 5;
-                break;
-              }
-              return _context2.abrupt("return", decodeURIComponent(src.split(',')[1]));
-            case 5:
-              _context2.next = 7;
-              return fetch(src);
-            case 7:
-              return _context2.abrupt("return", _context2.sent.text());
-            case 8:
-              _context2.next = 11;
-              break;
-            case 10:
-              return _context2.abrupt("return", Promise.reject());
-            case 11:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-    return function (_x) {
-      return _ref.apply(this, arguments);
-    };
-  }());
-  function parseSVG(svg, icon) {
-    var _svg;
-    if (icon && includes(svg, '<symbol')) {
-      svg = parseSymbols(svg, icon) || svg;
-    }
-    svg = $(svg.substr(svg.indexOf('<svg')));
-    return ((_svg = svg) === null || _svg === void 0 ? void 0 : _svg.hasChildNodes()) && svg;
-  }
-  var symbolRe = /<symbol([^]*?id=(['"])(.+?)\2[^]*?<\/)symbol>/g;
-  var symbols = {};
-  function parseSymbols(svg, icon) {
-    if (!symbols[svg]) {
-      symbols[svg] = {};
-      symbolRe.lastIndex = 0;
-      var match;
-      while (match = symbolRe.exec(svg)) {
-        symbols[svg][match[3]] = "<svg xmlns=\"http://www.w3.org/2000/svg\"".concat(match[1], "svg>");
-      }
-    }
-    return symbols[svg][icon];
-  }
-  function applyAnimation(el) {
-    var length = getMaxPathLength(el);
-    if (length) {
-      el.style.setProperty('--uk-animation-stroke', length);
-    }
-  }
-  function getMaxPathLength(el) {
-    return Math.ceil(Math.max.apply(Math, [0].concat(_toConsumableArray($$('[stroke]', el).map(function (stroke) {
-      try {
-        return stroke.getTotalLength();
-      } catch (e) {
-        return 0;
-      }
-    })))));
-  }
-  function insertSVG(el, root) {
-    if (isVoidElement(root) || isTag(root, 'canvas')) {
-      root.hidden = true;
-      var next = root.nextElementSibling;
-      return equals(el, next) ? next : after(root, el);
-    }
-    var last = root.lastElementChild;
-    return equals(el, last) ? last : append(root, el);
-  }
-  function equals(el, other) {
-    return isTag(el, 'svg') && isTag(other, 'svg') && innerHTML(el) === innerHTML(other);
-  }
-  function innerHTML(el) {
-    return (el.innerHTML || new XMLSerializer().serializeToString(el).replace(/<svg.*?>(.*?)<\/svg>/g, '$1')).replace(/\s/g, '');
-  }
-
   var Switcher = {
     mixins: [Lazyload, Swipe, Togglable],
     args: 'connect',
@@ -7585,6 +7672,7 @@
     Grid: grid,
     HeightMatch: heightMatch,
     HeightViewport: heightViewport,
+    Icon: Icon,
     Img: img,
     Leader: leader,
     Margin: Margin,
@@ -7598,7 +7686,7 @@
     Scrollspy: scrollspy,
     ScrollspyNav: scrollspyNav,
     Sticky: sticky,
-    Svg: svg,
+    Svg: SVG,
     Switcher: Switcher,
     Tab: tab,
     Toggle: toggle,
@@ -8629,7 +8717,7 @@
       return {
         easing: 'ease',
         finite: false,
-        velocity: .01,
+        velocity: 1,
         index: 0,
         prevIndex: -1,
         stack: [],
@@ -8685,6 +8773,7 @@
           return;
         }
         var stack = this.stack;
+        // console.log(stack);
         var queueIndex = force ? 0 : stack.length;
         var reset = function reset() {
           stack.splice(queueIndex, 1);
@@ -9821,8 +9910,6 @@
         var linear = arguments.length > 2 ? arguments[2] : undefined;
         var timing = linear ? 'linear' : easing;
         duration -= Math.round(duration * clamp(percent, -1, 1));
-        console.log('show');
-        this.translate(percent);
         percent = prev ? percent : clamp(percent, 0, 1);
         triggerUpdate(this.getItemIn(), 'itemin', {
           percent: percent,
@@ -9856,7 +9943,7 @@
         return this.show(duration, percent, true);
       },
       translate: function translate(percent) {
-        console.log('translate');
+        // console.log('translate');
         var distance = this.getDistance() * dir * (isRtl ? -1 : 1);
         css(list, 'transform', _translate(clamp(-to + (distance - distance * percent), -getWidth(list), dimensions$1(list).width) * (isRtl ? -1 : 1), 'px'));
         var actives = this.getActives();

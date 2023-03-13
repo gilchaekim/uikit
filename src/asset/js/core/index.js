@@ -6,7 +6,7 @@ export { default as FormCustom } from './form-custom';
 export { default as Grid } from './grid';
 export { default as HeightMatch } from './height-match';
 export { default as HeightViewport } from './height-viewport';
-// export { default as Icon } from './icon';
+export { default as Icon } from './icon';
 export { default as Img } from './img';
 export { default as Leader } from './leader';
 export { default as Margin } from './margin';

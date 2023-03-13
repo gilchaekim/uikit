@@ -24,15 +24,14 @@ export default function (prev, next, dir, { center, easing, list }) {
     const to = next
         ? getLeft(next, list, center)
         : from + dimensions(prev).width * dir * (isRtl ? -1 : 1);
-
-    return {
+    
+    return {    
         dir,
 
         show(duration, percent = 0, linear) {
             const timing = linear ? 'linear' : easing;
             duration -= Math.round(duration * clamp(percent, -1, 1));
-            console.log('show');
-            this.translate(percent);
+
 
             percent = prev ? percent : clamp(percent, 0, 1);
             triggerUpdate(this.getItemIn(), 'itemin', { percent, duration, timing, dir });
@@ -71,7 +70,7 @@ export default function (prev, next, dir, { center, easing, list }) {
         },
 
         translate(percent) {
-            console.log('translate');
+            // console.log('translate');
             const distance = this.getDistance() * dir * (isRtl ? -1 : 1);
             
             css(

@@ -30,7 +30,7 @@ export default {
     data: () => ({
         easing: 'ease',
         finite: false,
-        velocity: .01,
+        velocity: 1,
         index: 0,
         prevIndex: -1,
         stack: [],
@@ -90,6 +90,7 @@ export default {
             }
 
             const { stack } = this;
+            // console.log(stack);
             const queueIndex = force ? 0 : stack.length;
             const reset = () => {
                 stack.splice(queueIndex, 1);
