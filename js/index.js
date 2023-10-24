@@ -4172,6 +4172,8 @@
         scrollElement.scrollLeft = scrollLeft;
       },
       getPositionOffset: function getPositionOffset(element) {
+        console.log(element);
+        console.log(css(element, '--uk-position-offset'));
         return toPx(this.offset === false ? css(element, '--uk-position-offset') : this.offset, this.axis === 'x' ? 'width' : 'height', element) * (includes(['left', 'top'], this.dir) ? -1 : 1) * (this.inset ? -1 : 1);
       },
       getShiftOffset: function getShiftOffset(element) {
@@ -7043,6 +7045,7 @@
         var height$1 = _ref2.height,
           margin = _ref2.margin;
         this.inactive = !this.matchMedia || !isVisible(this.$el);
+        console.log(types);
         if (this.inactive) {
           return false;
         }
@@ -10849,7 +10852,7 @@
       title: '',
       delay: 0,
       animation: ['uk-animation-scale-up'],
-      duration: 100,
+      duration: 10000,
       cls: 'uk-active'
     },
     beforeConnect: function beforeConnect() {

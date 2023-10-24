@@ -71,6 +71,8 @@ export default {
         },
 
         getPositionOffset(element) {
+            console.log(element);
+            console.log(css(element, '--uk-position-offset'));
             return (
                 toPx(
                     this.offset === false ? css(element, '--uk-position-offset') : this.offset,

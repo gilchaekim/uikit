@@ -35,7 +35,7 @@ export default {
         title: '',
         delay: 0,
         animation: ['uk-animation-scale-up'],
-        duration: 100,
+        duration: 10000,
         cls: 'uk-active',
     },
 

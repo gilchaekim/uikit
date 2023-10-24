@@ -150,7 +150,7 @@ export default {
         {
             read({ height, margin }, types) {
                 this.inactive = !this.matchMedia || !isVisible(this.$el);
-
+                console.log(types);
                 if (this.inactive) {
                     return false;
                 }
